@@ -559,8 +559,7 @@ def main():
                         default='',
                         help='Selects the lowest valid build ID matching '
                         'the selected OS version (e.g. 10.14).')
-    parser.add_argument('--latest', metavar='latest_version',
-                        default='',
+    parser.add_argument('--latest', action='store_true',
                         help='Selects the latest valid build ID matching '
                         'the selected OS version (e.g. 10.14). Assumes '
                         'that this is an automated run.')
