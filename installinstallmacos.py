@@ -659,7 +659,7 @@ def main():
 
         # determine the latest valid build ID and select this
         # when using latest options
-        if (args.latest) and 'Beta' not in product_info[product_id]['title']:
+        if args.latest: # and 'Beta' not in product_info[product_id]['title']:
             try:
                 latest_valid_build
             except NameError:
