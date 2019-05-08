@@ -456,6 +456,12 @@ def get_lowest_version(current_item, lowest_item):
     else:
         return lowest_item
 
+def get_latest_version(current_item, latest_item):
+    '''Compares versions between two values and returns the latest value'''
+    if LooseVersion(current_item) > LooseVersion(latest_item):
+        return current_item
+    else:
+        return latest_item
 
 def replicate_product(catalog, product_id, workdir, ignore_cache=False):
     '''Downloads all the packages for a product'''
@@ -553,6 +559,11 @@ def main():
                         default='',
                         help='Selects the lowest valid build ID matching '
                         'the selected OS version (e.g. 10.14).')
+    parser.add_argument('--latest', metavar='latest_version',
+                        default='',
+                        help='Selects the latest valid build ID matching '
+                        'the selected OS version (e.g. 10.14). Assumes '
+                        'that this is an automated run.')
     args = parser.parse_args()
 
     # show this Mac's info
@@ -646,6 +657,21 @@ def main():
             os_version = '.'.join(major)
             if args.os != os_version:
                 continue
+
+        # determine the latest valid build ID and select this
+        # when using latest options
+        if (args.latest) and 'Beta' not in product_info[product_id]['title']:
+            try:
+                latest_valid_build
+            except NameError:
+                latest_valid_build = product_info[product_id]['BUILD']
+                answer = index+1
+            else:
+                latest_valid_build = get_latest_version(
+                                        product_info[product_id]['BUILD'],
+                                        latest_valid_build)
+                if latest_valid_build == product_info[product_id]['BUILD']:
+                    answer = index+1
 
         # determine the lowest valid build ID and select this
         # when using auto and version options
